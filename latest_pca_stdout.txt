@@ -1,0 +1,23 @@
+[INFO] Device: cuda
+[INFO] Loading cached X/Y from baseline...
+[INFO] X shape: (5000, 10000), Y shape: (5000, 10000)
+[INFO] Fitting PCA with n_components=1000 on train...
+[INFO] Saving PCA projections to cache...
+[INFO] PCA done in 13.4s
+[INFO] X_train_pca: (4500, 1000), X_val_pca: (500, 1000)
+[INFO] Model params: 12.32M  (IN=1000, OUT=10000)
+[E01] train_MSE=2.912546  val_MSE=1.820779  val_Pearson=0.8150  (0.5s)
+[E02] train_MSE=1.708920  val_MSE=1.487874  val_Pearson=0.8487  (0.3s)
+[E03] train_MSE=1.468815  val_MSE=1.383866  val_Pearson=0.8625  (0.3s)
+[E04] train_MSE=1.374269  val_MSE=1.378580  val_Pearson=0.8697  (0.3s)
+[E05] train_MSE=1.306591  val_MSE=1.297462  val_Pearson=0.8747  (0.3s)
+[E06] train_MSE=1.256720  val_MSE=1.226837  val_Pearson=0.8797  (0.3s)
+[E07] train_MSE=1.225633  val_MSE=1.223806  val_Pearson=0.8807  (0.3s)
+[E08] train_MSE=1.193931  val_MSE=1.178057  val_Pearson=0.8833  (0.3s)
+[E09] train_MSE=1.165675  val_MSE=1.172576  val_Pearson=0.8849  (0.3s)
+[E10] train_MSE=1.160545  val_MSE=1.176422  val_Pearson=0.8853  (0.3s)
+
+[INFO] Done in 10.1s
+[INFO] Logs (CSV):   runs_pca/run_20251124_153151_seed123_pca1000/metrics.csv
+[INFO] Best model:   runs_pca/run_20251124_153151_seed123_pca1000/best_model.pt
+[INFO] Run config:   runs_pca/run_20251124_153151_seed123_pca1000/config.json

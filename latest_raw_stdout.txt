@@ -1,0 +1,19 @@
+[INFO] Device: cuda
+[INFO] Loading cached X/Y from baseline...
+[INFO] X shape: (5000, 10000), Y shape: (5000, 10000)
+[INFO] Model params: 21.54M  (IN=10000, OUT=10000)
+[E01] train_MSE=3.874096  val_MSE=1.999728  val_Pearson=0.7905  (0.8s)
+[E02] train_MSE=1.942114  val_MSE=1.742790  val_Pearson=0.8205  (0.5s)
+[E03] train_MSE=1.746418  val_MSE=1.662574  val_Pearson=0.8354  (0.5s)
+[E04] train_MSE=1.680555  val_MSE=1.588994  val_Pearson=0.8380  (0.5s)
+[E05] train_MSE=1.605997  val_MSE=1.577560  val_Pearson=0.8483  (0.4s)
+[E06] train_MSE=1.539639  val_MSE=1.512224  val_Pearson=0.8543  (0.5s)
+[E07] train_MSE=1.505730  val_MSE=1.552098  val_Pearson=0.8562  (0.4s)
+[E08] train_MSE=1.491959  val_MSE=1.533380  val_Pearson=0.8584  (0.5s)
+[E09] train_MSE=1.467361  val_MSE=1.497665  val_Pearson=0.8590  (0.5s)
+[E10] train_MSE=1.431746  val_MSE=1.445889  val_Pearson=0.8650  (0.5s)
+
+[INFO] Done in 14.1s
+[INFO] Logs (CSV):   runs_raw/run_20251124_154214_seed123_raw/metrics.csv
+[INFO] Best model:   runs_raw/run_20251124_154214_seed123_raw/best_model.pt
+[INFO] Run config:   runs_raw/run_20251124_154214_seed123_raw/config.json

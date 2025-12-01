@@ -1,0 +1,11 @@
+cache/
+runs/
+runs_raw/
+runs_pca/
+runs_vae_repr/
+*.h5ad
+*.npz
+*.npy
+*.pt
+*.png
+__pycache__/

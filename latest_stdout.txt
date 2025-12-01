@@ -1,0 +1,21 @@
+[INFO] Device: cuda
+[INFO] Loading cached arrays...
+[INFO] Cached X: (5000, 10000), Y: (5000, 10000)
+[INFO] Setup time: 0.0s
+
+[INFO] Model params: 21.54M  (IN=10000, OUT=10000)
+[E01] train_MSE=2.799130  val_MSE=1.744948  val_Pearson=0.8209  (0.6s)
+[E02] train_MSE=1.651858  val_MSE=1.422470  val_Pearson=0.8553  (0.4s)
+[E03] train_MSE=1.449879  val_MSE=1.336889  val_Pearson=0.8646  (0.4s)
+[E04] train_MSE=1.408263  val_MSE=1.397266  val_Pearson=0.8662  (0.4s)
+[E05] train_MSE=1.318628  val_MSE=1.247338  val_Pearson=0.8742  (0.4s)
+[E06] train_MSE=1.270529  val_MSE=1.251200  val_Pearson=0.8766  (0.4s)
+[E07] train_MSE=1.229412  val_MSE=1.196086  val_Pearson=0.8802  (0.4s)
+[E08] train_MSE=1.212252  val_MSE=1.234323  val_Pearson=0.8789  (0.4s)
+[E09] train_MSE=1.228169  val_MSE=1.181436  val_Pearson=0.8818  (0.4s)
+[E10] train_MSE=1.183753  val_MSE=1.175771  val_Pearson=0.8823  (0.4s)
+
+[INFO] Done in 11.8s
+[INFO] Logs (CSV):   runs/run_20251110_185704_seed123/metrics.csv
+[INFO] Best model:   runs/run_20251110_185704_seed123/best_model.pt
+[INFO] Run config:   runs/run_20251110_185704_seed123/config.json
