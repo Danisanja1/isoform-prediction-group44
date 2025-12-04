@@ -24,12 +24,17 @@ train_baseline.py          # Original baseline (used to generate cached X/Y)
 train_VAE.py               # Standard MLP on VAE latent space
 
 residual/train_baseline_residual.py   # Baseline but with residual blocks
+
 residual/train_raw_residual.py        # Residual MLP on raw expression
+
 residual/train_pca_800_residual.py    # Residual MLP on PCA features
+
 residual/train_VAE_residual.py        # Residual MLP on VAE latent features
 
 inspect_run.py              # Inspect model performance across runs
+
 plot_all_curves.py          # Compare Raw, PCA, VAE (and residual versions)
+
 visualizecurves.py          # Utility plotting script
 
 
@@ -65,13 +70,20 @@ python inspect_run.py
 python plot_all_curves.py
 
 All models are saved under:
+
 runs_raw/
+
 runs_pca/
+
 runs_vae_repr/
 
+
 Each run folder contains:
+
 metrics.csv
+
 best_model.pt
+
 config.json
 
 
