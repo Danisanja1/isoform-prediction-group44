@@ -39,10 +39,10 @@ LR           = 1e-4        # lowered learning rate
 WEIGHT_DECAY = 1e-5
 PRINT_EVERY  = 1
 
-MLP_HIDDEN = 1024  # Number of hidden units for the IsoformMLP
+MLP_HIDDEN = 1024  # Number of hidden units for the isoformmlp
 
 CACHE_DIR    = "cache"
-RUNS_DIR     = "runs_vae_repr"  # separate folder for VAE-representation runs
+RUNS_DIR     = "runs_vae_repr"  # separate folder for vae-representation runs
 
 # =========================
 # Reproducibility & device
@@ -163,7 +163,7 @@ class VAE(nn.Module):
         return x_recon, mu, logv
 
 def vae_loss(x_recon, x, mu, logv, kl_weight=1e-3):
-    # Reconstruction MSE over batch
+    # Reconstruction mse over batch
     recon = F.mse_loss(x_recon, x, reduction="mean")
     # KL divergence per sample, then mean
     kl_per_sample = -0.5 * torch.sum(1 + logv - mu.pow(2) - logv.exp(), dim=1)
