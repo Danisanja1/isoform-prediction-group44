@@ -20,9 +20,9 @@ from sklearn.decomposition import PCA
 # Config
 # =========================
 # Must match the cache built by train_baseline.py
-N_SAMPLES    = 5000        # same as baseline
-TOP_GENES    = 10000       # same as baseline
-MAX_ISOFORMS = 10000       # same as baseline
+N_SAMPLES    = 5000        # same as baseline for the three
+TOP_GENES    = 10000       
+MAX_ISOFORMS = 10000      
 
 # PCA config
 N_COMPONENTS = 1000        # number of principal components (input dim to MLP)
@@ -55,7 +55,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"[INFO] Device: {DEVICE}")
 
 # =========================
-# Helpers
+# helpers
 # =========================
 def torch_pearsonr(pred: torch.Tensor, target: torch.Tensor) -> float:
     x = pred.view(-1).float()
@@ -120,7 +120,7 @@ def eval_pearson(model, loader):
     return torch_pearsonr(pred_all, real_all)
 
 # =========================
-# Main
+# main
 # =========================
 def main():
     x_cache, y_cache, pca_cache = cache_paths(N_SAMPLES, TOP_GENES, MAX_ISOFORMS)
@@ -130,7 +130,7 @@ def main():
             f"Cached X/Y not found. Run train_baseline.py once first to build {x_cache} and {y_cache}."
         )
 
-    # ----- Load X, Y from baseline cache -----
+    # ----- Load X, Y from baseline cache ----
     print("[INFO] Loading cached X/Y from baseline...")
     X = np.load(x_cache, mmap_mode="r")
     Y = np.load(y_cache, mmap_mode="r")
