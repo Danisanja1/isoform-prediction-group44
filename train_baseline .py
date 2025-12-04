@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 # Predict isoform expression from gene expression (bulk dataset)
-# DTU HPC-friendly: uses GPU if available, caches preprocessed arrays, logs to CSV.
-
 import os
 import math
 import time
@@ -18,18 +16,18 @@ from torch import nn
 from torch.utils.data import TensorDataset, DataLoader
 
 # =========================
-# Config (edit as needed)
+# Config
 # =========================
 GENE_PATH = "/work3/s193518/scIsoPred/data/bulk_processed_genes.h5ad"
 ISOFORM_PATH = "/work3/s193518/scIsoPred/data/bulk_processed_transcripts.h5ad"
 
-# You can override SEED at runtime:  SEED=123 python train_baseline.py
+# SEED=123 python train_baseline.py
 SEED = int(os.getenv("SEED", "42"))
 
-# Scale gradually once it works:
-N_SAMPLES    = 5000       # number of samples (rows) to use
+# Values that can be scaled:
+N_SAMPLES    = 5000       # number of samples to use
 TOP_GENES    = 10000      # keep top-K most-variable genes as inputs
-MAX_ISOFORMS = 10000      # cap number of isoform targets (columns)
+MAX_ISOFORMS = 10000      # cap number of isoform targets 
 VAL_FRACTION = 0.1
 
 # Training
@@ -95,7 +93,7 @@ def cache_paths(n_samples: int, top_genes: int, max_iso: int):
 
 # =========================
 # Data loading / Caching
-# =========================
+# ========================
 def load_or_build_data():
     t0 = time.time()
     x_cache, y_cache, idx_cache, mu_cache, sd_cache = cache_paths(N_SAMPLES, TOP_GENES, MAX_ISOFORMS)
@@ -122,7 +120,7 @@ def load_or_build_data():
     X_full = np.log1p(X_full).astype(np.float32)
     Y      = np.log1p(Y).astype(np.float32)
 
-    # Select top-K variable genes (keeps columns with highest variance)
+    # Select top-K variable genes (to keep columns with highest variance)
     if TOP_GENES is not None and TOP_GENES < X_full.shape[1]:
         vars_ = X_full.var(axis=0)
         top_idx = np.argsort(vars_)[-TOP_GENES:]
@@ -192,7 +190,7 @@ def eval_pearson(model, loader):
     real_all = torch.cat(reals, 0)
     return torch_pearsonr(pred_all, real_all)
 
-# =========================
+# ========================
 # Main
 # =========================
 def main():
@@ -222,7 +220,7 @@ def main():
     with open(CONFIG_PATH, "w") as f:
         json.dump(config_dict, f, indent=2)
 
-    # Load data (or from cache)
+    # Load data 
     X, Y, _, _ = load_or_build_data()
 
     # Train/val split
