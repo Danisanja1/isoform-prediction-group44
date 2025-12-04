@@ -38,16 +38,23 @@ How to Run the Code:
 (All scripts assume access to the DTU HPC cluster and the preprocessed data provided for the course)
 
 1. Run the baseline once to create cached matrices
+   
 python train_baseline.py
 
-2. Train individual models
+3. Train individual models
+   
 python train_raw.py
+
 python train_pca_800.py
+
 python train_VAE.py
 
 2b. Train residual MLP models
+
 python residual/train_raw_residual.py
+
 python residual/train_pca_800_residual.py
+
 python residual/train_VAE_residual.py
 
 
