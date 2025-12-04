@@ -9,23 +9,26 @@ We evaluate three input representations:
 - VAE latent representation (512-dimensional bottleneck)
 
 A feed-forward MLP is trained on each representation to predict isoform expression. Models are compared using Validation Pearson correlation and MSE.
+We also implement **residual MLP variants**, where skip connections are added between hidden layers. These residual networks are trained on the same representations (RAW, PCA, VAE) to evaluate whether residual connections improve optimization and prediction performance compared to standard MLPs.
+
 
 
 Repository Structure:
 
-train_raw.py          # MLP using raw gene expression
+train_raw.py               # Standard MLP using raw gene expression
+train_pca_800.py           # Standard MLP on PCA (800 components)
+train_baseline.py          # Original baseline (used to generate cached X/Y)
+train_VAE.py               # Standard MLP on VAE latent space
 
-train_pca_800.py      # PCA + MLP (n_components = 800)
+residual/train_baseline_residual.py   # Baseline but with residual blocks
+residual/train_raw_residual.py        # Residual MLP on raw expression
+residual/train_pca_800_residual.py    # Residual MLP on PCA features
+residual/train_VAE_residual.py        # Residual MLP on VAE latent features
 
-train_baseline.py     # Original baseline (used to generate cached X/Y)
+inspect_run.py              # Inspect model performance across runs
+plot_all_curves.py          # Compare Raw, PCA, VAE (and residual versions)
+visualizecurves.py          # Utility plotting script
 
-train_VAE.py          # Variational Autoencoder + MLP
-
-inspect_run.py        # Inspect model performance across runs
-
-plot_all_curves.py    # Plot comparison curves for RAW vs PCA vs VAE
-
-visualizecurves.py    # Utility plotting script
 
 
 How to Run the Code:
@@ -39,10 +42,16 @@ python train_raw.py
 python train_pca_800.py
 python train_VAE.py
 
-3. Inspect training results
+2b. Train residual MLP models
+python residual/train_raw_residual.py
+python residual/train_pca_800_residual.py
+python residual/train_VAE_residual.py
+
+
+4. Inspect training results
 python inspect_run.py
 
-4. Generate comparison plots (Pearson, MSE)
+5. Generate comparison plots (Pearson, MSE)
 python plot_all_curves.py
 
 All models are saved under:
@@ -64,6 +73,9 @@ Raw genes	            0.882	      1.249
 PCA (800 components)	0.900	      1.015
 
 VAE (512 latent dims)	0.846	      1.507
+
+Residual MLP models were also trained on all three representations. Their performance is included and discussed in the project report, allowing a direct comparison between standard and residual architectures.
+
 
 PCA offers the strongest performance, with the best balance between dimensionality reduction and information retention.
 
