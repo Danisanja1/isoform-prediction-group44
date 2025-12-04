@@ -19,9 +19,9 @@ from torch.utils.data import TensorDataset, DataLoader
 # Config
 # =========================
 # Same config as PCA version
-N_SAMPLES    = 5000        # same as baseline
-TOP_GENES    = 10000       # same as baseline
-MAX_ISOFORMS = 10000       # same as baseline
+N_SAMPLES    = 5000        # the three are the same as baseline
+TOP_GENES    = 10000       
+MAX_ISOFORMS = 10000       
 
 VAL_FRACTION = 0.1
 
@@ -40,7 +40,7 @@ RUNS_DIR  = "runs_raw"  # separate folder for raw gene runs
 
 # =========================
 # Reproducibility & device
-# =========================
+# ========================
 def set_seed(seed: int):
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -116,7 +116,7 @@ def eval_pearson(model, loader):
 
 # =========================
 # Main
-# =========================
+# ========================
 def main():
     x_cache, y_cache = cache_paths(N_SAMPLES, TOP_GENES, MAX_ISOFORMS)
 
@@ -167,7 +167,7 @@ def main():
         optimizer, mode="min", factor=0.5, patience=3, verbose=True
     )
 
-    # ----- Per-run logging setup -----
+    # ---- Per-run logging setup -----
     RUN_ID = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
     RUN_DIR = pathlib.Path(RUNS_DIR) / f"run_{RUN_ID}_seed{SEED}_raw"
     RUN_DIR.mkdir(parents=True, exist_ok=True)
