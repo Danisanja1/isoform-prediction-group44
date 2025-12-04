@@ -11,12 +11,19 @@ We evaluate three input representations:
 A feed-forward MLP is trained on each representation to predict isoform expression. Models are compared using Validation Pearson correlation and MSE.
 
 Repository Structure:
+
 train_raw.py          # MLP using raw gene expression
+
 train_pca_800.py      # PCA + MLP (n_components = 800)
+
 train_baseline.py     # Original baseline (used to generate cached X/Y)
+
 train_VAE.py          # Variational Autoencoder + MLP
+
 inspect_run.py        # Inspect model performance across runs
+
 plot_all_curves.py    # Plot comparison curves for RAW vs PCA vs VAE
+
 visualizecurves.py    # Utility plotting script
 
 How to Run the Code:
