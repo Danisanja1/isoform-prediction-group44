@@ -16,8 +16,11 @@ We also implement **residual MLP variants**, where skip connections are added be
 Repository Structure:
 
 train_raw.py               # Standard MLP using raw gene expression
+
 train_pca_800.py           # Standard MLP on PCA (800 components)
+
 train_baseline.py          # Original baseline (used to generate cached X/Y)
+
 train_VAE.py               # Standard MLP on VAE latent space
 
 residual/train_baseline_residual.py   # Baseline but with residual blocks
