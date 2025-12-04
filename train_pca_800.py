@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# train_raw.py
-# MLP on raw gene expression -> predict isoform expression
+# train_pca.py
+# MLP on PCA representation of gene expression -> predict isoform expression
 
 import os
 import math
@@ -14,14 +14,19 @@ import numpy as np
 import torch
 from torch import nn
 from torch.utils.data import TensorDataset, DataLoader
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 # =========================
 # Config
 # =========================
-# Same config as PCA version
+# Must match the cache built by train_baseline.py
 N_SAMPLES    = 5000        # same as baseline
 TOP_GENES    = 10000       # same as baseline
 MAX_ISOFORMS = 10000       # same as baseline
+
+# PCA config
+N_COMPONENTS = 800        # number of principal components (input dim to MLP)
 
 VAL_FRACTION = 0.1
 
@@ -36,7 +41,7 @@ WEIGHT_DECAY = 1e-5
 PRINT_EVERY  = 1
 
 CACHE_DIR = "cache"
-RUNS_DIR  = "runs_raw"  # separate folder for raw gene runs
+RUNS_DIR  = "runs_pca"     # separate folder for PCA runs
 
 # =========================
 # Reproducibility & device
@@ -67,7 +72,8 @@ def torch_pearsonr(pred: torch.Tensor, target: torch.Tensor) -> float:
 def cache_paths(n_samples: int, top_genes: int, max_iso: int):
     x_path = os.path.join(CACHE_DIR, f"X_n{n_samples}_g{top_genes}.npy")
     y_path = os.path.join(CACHE_DIR, f"Y_n{n_samples}_t{max_iso}.npy")
-    return x_path, y_path
+    pca_path = os.path.join(CACHE_DIR, f"PCA_n{n_samples}_g{top_genes}_pc{N_COMPONENTS}.npz")
+    return x_path, y_path, pca_path
 
 class IsoformMLP(nn.Module):
     def __init__(self, in_dim: int, out_dim: int, hidden: int = 1024, p_drop: float = 0.1):
@@ -118,7 +124,7 @@ def eval_pearson(model, loader):
 # Main
 # =========================
 def main():
-    x_cache, y_cache = cache_paths(N_SAMPLES, TOP_GENES, MAX_ISOFORMS)
+    x_cache, y_cache, pca_cache = cache_paths(N_SAMPLES, TOP_GENES, MAX_ISOFORMS)
 
     if not (os.path.exists(x_cache) and os.path.exists(y_cache)):
         raise RuntimeError(
@@ -144,10 +150,57 @@ def main():
     X_val_full   = X[val_idx]
     Y_val        = Y[val_idx]
 
+    # ----- PCA: fit on train, transform both -----
+    t0 = time.time()
+    if os.path.exists(pca_cache):
+        print("[INFO] Loading PCA projection from cache...")
+        data_pca = np.load(pca_cache)
+        X_train_pca = data_pca["X_train_pca"]
+        X_val_pca   = data_pca["X_val_pca"]
+    else:
+        print(f"[INFO] Fitting PCA with n_components={N_COMPONENTS} on train...")
+        # Optional: center/scale inputs before PCA (assumes X already log1p)
+        # Here we just center (PCA does centering internally)
+        pca = PCA(n_components=N_COMPONENTS, svd_solver="randomized", random_state=SEED)
+        X_train_pca = pca.fit_transform(X_train_full)
+        X_val_pca   = pca.transform(X_val_full)
+        print("[INFO] Saving PCA projections to cache...")
+        np.savez_compressed(pca_cache, X_train_pca=X_train_pca, X_val_pca=X_val_pca)
+
+        # ---------------------------------------------------------
+        # Plot PCA variance explained (individual + cumulative)
+        # ---------------------------------------------------------
+        expl_var = pca.explained_variance_ratio_
+        cum_expl_var = np.cumsum(expl_var)
+        threshold = 0.90
+
+        plt.figure(figsize=(10, 5))
+        plt.plot(range(1, len(expl_var) + 1), expl_var, "x-", label="Individual")
+        plt.plot(range(1, len(expl_var) + 1), cum_expl_var, "o-", label="Cumulative")
+        plt.axhline(threshold, linestyle="--", color="black", label=f"{threshold*100:.0f}% Threshold")
+
+        plt.title("Variance Explained by PCA Components")
+        plt.xlabel("Principal Component")
+        plt.ylabel("Variance Explained")
+        plt.grid()
+        plt.legend()
+        plt.tight_layout()
+
+        # Save plot to run directory (or cache)
+
+        plot_path_variance = f"{RUNS_DIR}/pca_variance_explained.png"
+        plt.tight_layout()
+        plt.savefig(plot_path_variance)
+        print(f"[INFO] Saved Pearson learning curve to {plot_path_variance}")
+
+
+    print(f"[INFO] PCA done in {time.time()-t0:.1f}s")
+    print(f"[INFO] X_train_pca: {X_train_pca.shape}, X_val_pca: {X_val_pca.shape}")
+
     # ----- Tensors & loaders -----
-    X_train_t = torch.tensor(X_train_full, dtype=torch.float32)
+    X_train_t = torch.tensor(X_train_pca, dtype=torch.float32)
     Y_train_t = torch.tensor(Y_train,      dtype=torch.float32)
-    X_val_t   = torch.tensor(X_val_full,   dtype=torch.float32)
+    X_val_t   = torch.tensor(X_val_pca,    dtype=torch.float32)
     Y_val_t   = torch.tensor(Y_val,        dtype=torch.float32)
 
     train_loader = DataLoader(TensorDataset(X_train_t, Y_train_t),
@@ -155,8 +208,9 @@ def main():
     val_loader   = DataLoader(TensorDataset(X_val_t,   Y_val_t),
                               batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
 
-    in_dim  = X_train_full.shape[1]
-    out_dim = Y_train.shape[1]
+    in_dim  = X_train_pca.shape[1]   # N_COMPONENTS
+    out_dim = Y_train.shape[1]       # same isoform dim as baseline
+
     model = IsoformMLP(in_dim, out_dim, hidden=HIDDEN_DIM, p_drop=DROPOUT_P).to(DEVICE)
     n_params = sum(p.numel() for p in model.parameters())
     print(f"[INFO] Model params: {n_params/1e6:.2f}M  (IN={in_dim}, OUT={out_dim})")
@@ -169,7 +223,7 @@ def main():
 
     # ----- Per-run logging setup -----
     RUN_ID = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    RUN_DIR = pathlib.Path(RUNS_DIR) / f"run_{RUN_ID}_seed{SEED}_raw"
+    RUN_DIR = pathlib.Path(RUNS_DIR) / f"run_{RUN_ID}_seed{SEED}_pca{N_COMPONENTS}"
     RUN_DIR.mkdir(parents=True, exist_ok=True)
     CSV_PATH = RUN_DIR / "metrics.csv"
     BEST_PATH = RUN_DIR / "best_model.pt"
@@ -188,7 +242,8 @@ def main():
         "LR": LR,
         "WEIGHT_DECAY": WEIGHT_DECAY,
         "DEVICE": str(DEVICE),
-        "REPRESENTATION": "RAW"
+        "N_COMPONENTS": N_COMPONENTS,
+        "REPRESENTATION": "PCA"
     }
     with open(CONFIG_PATH, "w") as f:
         json.dump(config_dict, f, indent=2)
