@@ -48,9 +48,9 @@ config.json
 
 Results (Summary):
 Representation	      Pearson ↑  	MSE ↓
-Raw genes	            0.882	      1.249
-PCA (800 components)	0.900	      1.015
-VAE (512 latent dims)	0.846	      1.507
+- Raw genes	            0.882	      1.249
+- PCA (800 components)	0.900	      1.015
+- VAE (512 latent dims)	0.846	      1.507
 
 PCA offers the strongest performance, with the best balance between dimensionality reduction and information retention.
 
