@@ -10,6 +10,7 @@ We evaluate three input representations:
 
 A feed-forward MLP is trained on each representation to predict isoform expression. Models are compared using Validation Pearson correlation and MSE.
 
+
 Repository Structure:
 
 train_raw.py          # MLP using raw gene expression
@@ -25,6 +26,7 @@ inspect_run.py        # Inspect model performance across runs
 plot_all_curves.py    # Plot comparison curves for RAW vs PCA vs VAE
 
 visualizecurves.py    # Utility plotting script
+
 
 How to Run the Code:
 (All scripts assume access to the DTU HPC cluster and the preprocessed data provided for the course)
@@ -52,6 +54,7 @@ Each run folder contains:
 metrics.csv
 best_model.pt
 config.json
+
 
 Results (Summary):
 Representation	      Pearson ↑  	MSE ↓
