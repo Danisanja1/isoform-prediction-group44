@@ -46,7 +46,7 @@ How to Run the Code:
    
 python train_baseline.py
 
-3. Train individual models
+2. Train individual models
    
 python train_raw.py
 
@@ -63,10 +63,10 @@ python residual/train_pca_800_residual.py
 python residual/train_VAE_residual.py
 
 
-4. Inspect training results
+3. Inspect training results
 python inspect_run.py
 
-5. Generate comparison plots (Pearson, MSE)
+4. Generate comparison plots (Pearson, MSE)
 python plot_all_curves.py
 
 All models are saved under:
